@@ -68,6 +68,7 @@
     <div class="container">
         @section('breadcrumbs', Breadcrumbs::render())
         @yield('breadcrumbs')
+        @include('layouts.partials.flash')
         @yield('content')
     </div>
 </main>
@@ -82,6 +83,5 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="https://use.fontawesome.com/21b16e1f3b.js" defer></script>
 </body>
 </html>
