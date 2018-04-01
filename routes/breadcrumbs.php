@@ -30,3 +30,8 @@ Breadcrumbs::register('profile', function (Crumbs $crumbs) {
     $crumbs->parent('home');
     $crumbs->push('Profile', route('profile'));
 });
+
+Breadcrumbs::register('admin.home', function (Crumbs $crumbs) {
+    $crumbs->parent('home');
+    $crumbs->push('Admin', route('admin.home'));
+});
