@@ -5,21 +5,48 @@ namespace App\Http\Controllers\Auth;
 use App\Email\Auth\EmailVerifier;
 use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
-    use RegistersUsers;
-
-    protected $redirectTo = '/profile';
-
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+    public function showRegistrationForm()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function register(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'password' => bcrypt($request['password']),
+            'verify_token' => Str::random(),
+            'status' => User::STATUS_AWAIT,
+        ]);
+
+        Mail::to($user->email)->send(new EmailVerifier($user));
+        event(new Registered($user));
+
+        return redirect()->route('login')
+            ->with('success', 'Check your email for verification.');
     }
 
     /**
@@ -30,7 +57,7 @@ class RegisterController extends Controller
     {
         if (!$user = User::where('verify_token', $token)->first()) {
             return redirect()->route('login')
-                ->with('error', 'Your link cannot be identified.');
+                ->with('error', 'Sorry your link cannot be identified.');
         }
 
         if ($user->status !== User::STATUS_AWAIT) {
@@ -44,48 +71,5 @@ class RegisterController extends Controller
 
         return redirect()->route('login')
             ->with('success', 'Your e-mail is verified. You can now login.');
-    }
-
-    /**
-     * @param array $data
-     * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-    }
-
-    /**
-     * @param array $data
-     * @return User
-     */
-    protected function create(array $data)
-    {
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'verify_token' => Str::random(),
-            'status' => User::STATUS_WAIT,
-        ]);
-
-        Mail::to($user->email)->send(new EmailVerifier($user));
-        return $user;
-    }
-
-    /**
-     * @param Request $request
-     * @param $user
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    protected function registered(Request $request, $user)
-    {
-        $this->guard()->logout();
-        return redirect()->route('login')
-            ->with('success', 'Check your email to verify account.');
     }
 }
