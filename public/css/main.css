@@ -1,16 +1,15 @@
-.navbar-laravel{
-    color: #1b1e21;
-}
 .navbar-brand{
     font-weight: bold;
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     letter-spacing: 0.5rem;
 }
+
 body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .app-content {

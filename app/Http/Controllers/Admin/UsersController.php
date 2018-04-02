@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Services\Auth\RegisterService;
 use App\User;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\CreateRequest;
+use App\Http\Requests\Admin\UpdateRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
 /**
  * Class UsersController
@@ -14,6 +14,13 @@ use Illuminate\Validation\Rule;
  */
 class UsersController extends Controller
 {
+    private $registerService;
+
+    public function __construct(RegisterService $registerService)
+    {
+        $this->registerService = $registerService;
+    }
+
     public function index()
     {
         $users = User::orderByDesc('id')->paginate(20);
@@ -26,20 +33,15 @@ class UsersController extends Controller
     }
 
     /**
-     * Store created users with validation
-     * @param Request $request
+     * @param CreateRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        $data = $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-        ]);
-
-        $data['password'] = bcrypt(Str::random());
-        $data['status'] = User::STATUS_ACTIVE;
-        $user = User::create($data);
+        $user = User::new(
+            $request['name'],
+            $request['email']
+        );
 
         return redirect()->route('admin.users.show', $user);
     }
@@ -68,19 +70,13 @@ class UsersController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param User $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateRequest $request, User $user)
     {
-        $data = $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,id,' . $user->id,
-            'status' => ['required', 'string', Rule::in([User::STATUS_AWAIT, User::STATUS_ACTIVE])],
-        ]);
-
-        $user->update($data);
+        $user->update($request->only(['name', 'email']));
         return redirect()->route('admin.users.show', $user);
     }
 
@@ -92,5 +88,15 @@ class UsersController extends Controller
     {
         $user->delete();
         return redirect()->route('admin.users.index');
+    }
+
+    /**
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function verify(User $user)
+    {
+        $this->registerService->verify($user->id);
+        return redirect()->route('admin.users.show', $user);
     }
 }

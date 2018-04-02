@@ -4,11 +4,19 @@
     @include('admin.users._nav')
 
     <div class="d-flex flex-row mb-3">
-        <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary mr-1">Edit</a>
+        <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary mr-2"><i class="fa fa-pencil"></i> Edit</a>
+
+        @if ($user->waiting())
+            <form method="POST" action="{{ route('admin.users.verify', $user) }}" class="mr-1">
+                @csrf
+                <button class="btn btn-success btn-sm">Verify</button>
+            </form>
+        @endif
+
         <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="mr-1">
             @csrf
             @method('DELETE')
-            <button class="btn btn-danger">Delete</button>
+            <button class="btn btn-danger"><i class="fa fa-times"></i> Delete</button>
         </form>
     </div>
 
@@ -26,10 +34,10 @@
         <tr>
             <th>Status</th>
             <td>
-                @if ($user->status === \App\User::STATUS_AWAIT)
+                @if ($user->waiting())
                     <span class="badge badge-secondary">Waiting</span>
                 @endif
-                @if ($user->status === \App\User::STATUS_ACTIVE)
+                @if ($user->isActive())
                     <span class="badge badge-primary">Active</span>
                 @endif
             </td>

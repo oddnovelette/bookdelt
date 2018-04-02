@@ -3,7 +3,11 @@
 @section('content')
     @include('admin.users._nav')
 
-    <p><a href="{{ route('admin.users.create') }}" class="btn btn-info">Create New User</a></p>
+    <p>
+        <a href="{{ route('admin.users.create') }}" class="btn btn-info btn-md">
+            <i class="fa fa-plus"></i> New User
+        </a>
+    </p>
 
     <table class="table table-bordered table-striped">
         <thead>
@@ -22,10 +26,10 @@
                 <td><a href="{{ route('admin.users.show', $user) }}">{{ $user->name }}</a></td>
                 <td>{{ $user->email }}</td>
                 <td>
-                    @if ($user->status === \App\User::STATUS_AWAIT)
+                    @if ($user->waiting())
                         <span class="badge badge-secondary">Waiting</span>
                     @endif
-                    @if ($user->status === \App\User::STATUS_ACTIVE)
+                    @if ($user->isActive())
                         <span class="badge badge-primary">Active</span>
                     @endif
                 </td>
