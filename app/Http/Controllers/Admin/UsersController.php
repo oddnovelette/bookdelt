@@ -7,6 +7,7 @@ use App\User;
 use App\Http\Requests\Admin\CreateRequest;
 use App\Http\Requests\Admin\UpdateRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 /**
  * Class UsersController
@@ -21,10 +22,43 @@ class UsersController extends Controller
         $this->registerService = $registerService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderByDesc('id')->paginate(20);
-        return view('admin.users.index', compact('users'));
+        $query = User::orderByDesc('id');
+
+        if (!empty($value = $request->get('id'))) {
+            $query->where('id', $value);
+        }
+
+        if (!empty($value = $request->get('name'))) {
+            $query->where('name', 'like', '%' . $value . '%');
+        }
+
+        if (!empty($value = $request->get('email'))) {
+            $query->where('email', 'like', '%' . $value . '%');
+        }
+
+        if (!empty($value = $request->get('status'))) {
+            $query->where('status', $value);
+        }
+
+        if (!empty($value = $request->get('role'))) {
+            $query->where('role', $value);
+        }
+
+        $users = $query->paginate(20);
+
+        $statuses = [
+            User::STATUS_AWAIT => 'Waiting',
+            User::STATUS_ACTIVE => 'Active',
+        ];
+
+        $roles = [
+            User::ROLE_USER => 'User',
+            User::ROLE_ADMIN => 'Admin',
+        ];
+
+        return view('admin.users.index', compact('users', 'statuses', 'roles'));
     }
 
     public function create()
@@ -66,7 +100,12 @@ class UsersController extends Controller
             User::STATUS_ACTIVE => 'Active',
         ];
 
-        return view('admin.users.edit', compact('user', 'statuses'));
+        $roles = [
+            User::ROLE_USER => 'User',
+            User::ROLE_ADMIN => 'Admin',
+        ];
+
+        return view('admin.users.edit', compact('user', 'statuses', 'roles'));
     }
 
     /**
@@ -77,6 +116,10 @@ class UsersController extends Controller
     public function update(UpdateRequest $request, User $user)
     {
         $user->update($request->only(['name', 'email']));
+
+        if ($request['role'] !== $user->role) {
+            $user->changeRole($request['role']);
+        }
         return redirect()->route('admin.users.show', $user);
     }
 
