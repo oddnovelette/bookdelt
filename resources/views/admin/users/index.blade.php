@@ -60,7 +60,7 @@
 
     <p>
         <a href="{{ route('admin.users.create') }}" class="btn btn-info btn-sm">
-            <i class="fa fa-plus"></i> New User
+            <i class="fa fa-user-plus fa-lg"></i></i> New User
         </a>
     </p>
 
