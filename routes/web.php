@@ -23,5 +23,9 @@ Route::group(
         Route::resource('users', 'UsersController');
         Route::post('/users/{user}/verify', 'UsersController@verify')->name('users.verify');
         Route::resource('regions', 'RegionController');
+
+        Route::group(['prefix' => 'adverts', 'as' => 'adverts.', 'namespace' => 'Adverts'], function () {
+            Route::resource('categories', 'CategoryController');
+        });
     }
 );
