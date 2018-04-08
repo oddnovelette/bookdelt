@@ -40,10 +40,10 @@ class RegisterController extends Controller
     }
 
     /**
-     * @param string $token
+     * @param $token
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function verify(string $token)
+    public function verify($token)
     {
         if (!$user = User::where('verify_token', $token)->first()) {
             return redirect()->route('login')

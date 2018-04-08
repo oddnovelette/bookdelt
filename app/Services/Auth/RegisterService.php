@@ -24,6 +24,7 @@ class RegisterService
             $request['email'],
             $request['password']
         );
+
         Mail::to($user->email)->send(new EmailVerifier($user));
         event(new Registered($user));
     }

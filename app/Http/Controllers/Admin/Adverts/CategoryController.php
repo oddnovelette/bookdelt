@@ -24,6 +24,10 @@ class CategoryController extends Controller
         return view('admin.adverts.categories.create', compact('parents'));
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -41,17 +45,33 @@ class CategoryController extends Controller
         return redirect()->route('admin.adverts.categories.show', $category);
     }
 
+    /**
+     * @param Category $category
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function show(Category $category)
     {
-        return view('admin.adverts.categories.show', compact('category'));
+        $parentAttributes = $category->parentAttributes();
+        $attributes = $category->attributes()->orderBy('sort')->get();
+
+        return view('admin.adverts.categories.show', compact('category', 'attributes', 'parentAttributes'));
     }
 
+    /**
+     * @param Category $category
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function edit(Category $category)
     {
         $parents = Category::defaultOrder()->withDepth()->get();
         return view('admin.adverts.categories.edit', compact('category', 'parents'));
     }
 
+    /**
+     * @param Request $request
+     * @param Category $category
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Category $category)
     {
         $this->validate($request, [
@@ -69,12 +89,15 @@ class CategoryController extends Controller
         return redirect()->route('admin.adverts.categories.show', $category);
     }
 
+    /**
+     * @param Category $category
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function first(Category $category)
     {
         if ($first = $category->siblings()->defaultOrder()->first()) {
             $category->insertBeforeNode($first);
         }
-
         return redirect()->route('admin.adverts.categories.index');
     }
 
