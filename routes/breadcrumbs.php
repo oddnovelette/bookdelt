@@ -29,9 +29,9 @@ Breadcrumbs::register('password.reset', function (Crumbs $crumbs) {
     $crumbs->push('Change', route('password.reset'));
 });
 
-Breadcrumbs::register('profile', function (Crumbs $crumbs) {
+Breadcrumbs::register('account', function (Crumbs $crumbs) {
     $crumbs->parent('home');
-    $crumbs->push('Profile', route('profile'));
+    $crumbs->push('Account', route('account'));
 });
 
 Breadcrumbs::register('admin.home', function (Crumbs $crumbs) {

@@ -7,9 +7,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User
+ *
  * @package App
  * @property int $id
  * @property string $name
+ * @property string $last_name
+ * @property string $skype
+ * @property string $phone
  * @property string $email
  * @property string $password
  * @property string $verify_token
@@ -27,7 +31,15 @@ class User extends Authenticatable
     public const ROLE_ADMIN = 'admin';
 
     protected $fillable = [
-        'name', 'email', 'password', 'verify_token', 'status', 'role',
+        'name',
+        'last_name',
+        'skype',
+        'phone',
+        'email',
+        'password',
+        'verify_token',
+        'status',
+        'role',
     ];
 
     protected $hidden = [
@@ -91,7 +103,7 @@ class User extends Authenticatable
             'verify_token' => null,
         ]);
     }
-
+    
     public function changeRole($role): void
     {
         if (!\in_array($role, [self::ROLE_USER, self::ROLE_ADMIN], true)) {
