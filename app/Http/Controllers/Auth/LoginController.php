@@ -54,15 +54,17 @@ class LoginController extends Controller
             $request->session()->regenerate();
             $this->clearLoginAttempts($request);
             $user = Auth::user();
+
             if ($user->waiting()) {
                 Auth::logout();
                 return back()->with('error', 'Please check email to confirm your account.');
             }
 
-            return redirect()->intended(route('profile'));
+            return redirect()->intended(route('account.home'));
         }
 
         $this->incrementLoginAttempts($request);
+        
         throw ValidationException::withMessages(['email' => [trans('auth.failed')]]);
     }
 

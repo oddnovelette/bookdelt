@@ -29,17 +29,29 @@ Breadcrumbs::register('password.reset', function (Crumbs $crumbs) {
     $crumbs->push('Change', route('password.reset'));
 });
 
-Breadcrumbs::register('account', function (Crumbs $crumbs) {
+// Account
+
+Breadcrumbs::register('account.home', function (Crumbs $crumbs) {
     $crumbs->parent('home');
-    $crumbs->push('Account', route('account'));
+    $crumbs->push('Account', route('account.home'));
 });
+
+Breadcrumbs::register('account.profile.home', function (Crumbs $crumbs) {
+    $crumbs->parent('account.home');
+    $crumbs->push('Profile', route('account.profile.home'));
+});
+
+Breadcrumbs::register('account.profile.edit', function (Crumbs $crumbs) {
+    $crumbs->parent('account.profile.home');
+    $crumbs->push('Edit', route('account.profile.edit'));
+});
+
+// Admin
 
 Breadcrumbs::register('admin.home', function (Crumbs $crumbs) {
     $crumbs->parent('home');
     $crumbs->push('Admin', route('admin.home'));
 });
-
-// Users breadcrumbs
 
 Breadcrumbs::register('admin.users.index', function (Crumbs $crumbs) {
     $crumbs->parent('admin.home');

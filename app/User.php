@@ -103,7 +103,7 @@ class User extends Authenticatable
             'verify_token' => null,
         ]);
     }
-    
+
     public function changeRole($role): void
     {
         if (!\in_array($role, [self::ROLE_USER, self::ROLE_ADMIN], true)) {

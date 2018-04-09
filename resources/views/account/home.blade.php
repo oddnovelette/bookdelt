@@ -1,12 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card">
-    <div class="card-header">User's Dashboard</div>
 
-    <div class="card-body">
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item"><a class="nav-link active" href="{{ route('account.home') }}">Dashboard</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ route('account.profile.home') }}">Profile</a></li>
+</ul>
 
-        You are logged in!
-    </div>
-</div>
 @endsection

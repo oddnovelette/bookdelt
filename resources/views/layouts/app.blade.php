@@ -46,12 +46,13 @@
                                 </a>
 
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('admin.home') }}">Adminside</a>
-                                    <a class="dropdown-item" href="{{ route('account') }}">Profile</a>
+                                    <a class="dropdown-item" href="{{ route('admin.home') }}"><i class="fa fa-user-secret"></i>&nbsp; Adminside</a>
+                                    <a class="dropdown-item" href="{{ route('account.home') }}"><i class="fa fa-address-card-o"></i>&nbsp; Profile</a>
+                                    <a class="dropdown-item" href="{{ route('account.profile.edit') }}"><i class="fa fa-cogs"></i>&nbsp; Settings</a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                        <i class="fa fa-power-off"></i>&nbsp;&nbsp; {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
