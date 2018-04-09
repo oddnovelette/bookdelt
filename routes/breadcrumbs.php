@@ -58,6 +58,13 @@ Breadcrumbs::register('admin.users.index', function (Crumbs $crumbs) {
     $crumbs->push('Users', route('admin.users.index'));
 });
 
+// Account Adverts
+
+Breadcrumbs::register('account.adverts.index', function (Crumbs $crumbs) {
+    $crumbs->parent('account.home');
+    $crumbs->push('Adverts', route('account.adverts.index'));
+});
+
 Breadcrumbs::register('admin.users.create', function (Crumbs $crumbs) {
     $crumbs->parent('admin.users.index');
     $crumbs->push('Create', route('admin.users.create'));

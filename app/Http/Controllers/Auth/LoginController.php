@@ -64,7 +64,7 @@ class LoginController extends Controller
         }
 
         $this->incrementLoginAttempts($request);
-        
+
         throw ValidationException::withMessages(['email' => [trans('auth.failed')]]);
     }
 
